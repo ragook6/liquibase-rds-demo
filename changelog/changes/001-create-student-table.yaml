@@ -42,3 +42,7 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+
+      rollback:
+        - dropTable:
+            tableName: employee
