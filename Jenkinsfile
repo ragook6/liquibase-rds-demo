@@ -11,7 +11,8 @@ pipeline {
         stage('Run Liquibase Deployment') {
             steps {
                 echo 'Running Liquibase Deployment Script...'
-                sh '/var/lib/jenkins/callLiquibaseDemoDeployment.sh'
+                sh 'chmod +x callLiquibaseDemoDeployment.sh'
+                sh './callLiquibaseDemoDeployment.sh'
             }
         }
     }

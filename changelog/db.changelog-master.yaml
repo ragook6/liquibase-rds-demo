@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: changes/001-create-student-table.yaml
