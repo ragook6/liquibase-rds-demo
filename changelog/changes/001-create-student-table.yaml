@@ -18,3 +18,22 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2
+      author: ragu
+      changes:
+        - createTable:
+            tableName: employee
+            columns:
+              - column:
+                  name: empid
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
