@@ -18,6 +18,11 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+
+      rollback:
+        - dropTable:
+            tableName: student
+
   - changeSet:
       id: 2
       author: ragu
