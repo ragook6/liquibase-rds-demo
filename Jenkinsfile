@@ -5,12 +5,13 @@ pipeline {
         choice(
             name: 'LB_ACTION',
             choices: ['update', 'rollback'],
-            description: 'Choose Liquibase action: update (deploy) or rollback'
+            description: 'Choose Liquibase action: update (deploy) or rollback last changeSet'
         )
     }
 
     environment {
-        LB_ACTION = "${params.LB_ACTION}"   // passed into the shell script
+        // Expose the parameter to the shell script
+        LB_ACTION = "${params.LB_ACTION}"
     }
 
     stages {
