@@ -1,30 +1,28 @@
 #!/bin/bash
 set -euo pipefail
 
-# ---- Config ----
-REGION="us-east-1"
-SECRET_ID='rds!cluster-1cf6b26b-e9f5-46b8-a1fb-6933aba6d6c1'   # your RDS secret id
-
-# Static DB connection details (same as your working script)
-DB_HOST="dbdevopsaurora-instance-1.c0x0408m8e23.us-east-1.rds.amazonaws.com"
-DB_PORT="5432"
-DB_NAME="postgres"
-
-# Liquibase install location on the Jenkins EC2
+# Where Liquibase is installed
 LB_HOME="/var/lib/jenkins/liquibase"
 
-# Jenkins workspace changelog path (repo files)
+# Path to the master changelog inside the Jenkins workspace
 WORKSPACE_DIR="${WORKSPACE:-/var/lib/jenkins/workspace/liquibase-rds-demo}"
 CHANGELOG_FILE="${WORKSPACE_DIR}/changelog/db.changelog-master.yaml"
+
+# RDS secret
+SECRET_ID="rds!cluster-1cf6b26b-e9f5-46b8-a1fb-6933aba6d6c1"
+REGION="us-east-1"
 
 echo "[INFO] Fetching DB credentials from Secrets Manager: $SECRET_ID"
 
 SECRET_JSON=$(aws secretsmanager get-secret-value \
   --secret-id "$SECRET_ID" \
   --region "$REGION" \
-  --query SecretString \
+  --query 'SecretString' \
   --output text)
 
+DB_HOST=$(echo "$SECRET_JSON" | jq -r '.host')
+DB_PORT=$(echo "$SECRET_JSON" | jq -r '.port')
+DB_NAME=$(echo "$SECRET_JSON" | jq -r '.dbname')
 DB_USER=$(echo "$SECRET_JSON" | jq -r '.username')
 DB_PASS=$(echo "$SECRET_JSON" | jq -r '.password')
 
