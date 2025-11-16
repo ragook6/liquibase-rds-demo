@@ -56,6 +56,12 @@ if [[ ! -f "$CHANGELOG_FILE" ]]; then
   exit 1
 fi
 
+# Liquibase action: 'update' (deploy) or 'rollback'
+ACTION="${LB_ACTION:-update}"   # default to update if not set
+
+echo "[INFO] Liquibase ACTION: $ACTION"
+
+
 # Decide Liquibase command based on ACTION
 LB_CMD=""
 LB_ARGS=""
