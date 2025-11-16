@@ -1,6 +1,18 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'LB_ACTION',
+            choices: ['update', 'rollback'],
+            description: 'Choose Liquibase action: update (deploy) or rollback'
+        )
+    }
+
+    environment {
+        LB_ACTION = "${params.LB_ACTION}"   // passed into the shell script
+    }
+
     stages {
         stage('Clone Repository') {
             steps {
@@ -8,18 +20,14 @@ pipeline {
             }
         }
 
-        stage('Run Liquibase Deployment') {
+        stage('Run Liquibase') {
             steps {
-                
-                      // Add this debug block ↓↓↓
                 sh '''
                   echo "WORKSPACE is: $WORKSPACE"
                   echo "Directory tree under workspace:"
                   ls -R .
                 '''
-                // End debug block ↑↑↑
-                
-                echo 'Running Liquibase Deployment Script...'
+                echo "Running Liquibase with ACTION=${LB_ACTION}..."
                 sh 'chmod +x callLiquibaseDemoDeployment.sh'
                 sh './callLiquibaseDemoDeployment.sh'
             }
@@ -28,10 +36,10 @@ pipeline {
 
     post {
         success {
-            echo 'Liquibase deployment completed successfully!'
+            echo "Liquibase ${env.LB_ACTION} completed successfully!"
         }
         failure {
-            echo 'Liquibase deployment failed!'
+            echo "Liquibase ${env.LB_ACTION} failed!"
         }
     }
 }
